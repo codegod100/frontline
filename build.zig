@@ -4,8 +4,9 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib = b.addStaticLibrary(.{
+    const lib = b.addLibrary(.{
         .name = "frontline",
+        .linkage = .static,
         .target = target,
         .optimize = optimize,
     });
@@ -15,28 +16,28 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    lib.root_module = vdom_mod;
+    lib.addImport("vdom", vdom_mod);
 
     const js_mod = b.createModule(.{
         .root_source_file = b.path("lib/js_interop.zig"),
         .target = target,
         .optimize = optimize,
     });
-    lib.root_module = js_mod;
+    lib.addImport("js_interop", js_mod);
 
     const component_mod = b.createModule(.{
         .root_source_file = b.path("lib/component.zig"),
         .target = target,
         .optimize = optimize,
     });
-    lib.root_module = component_mod;
+    lib.addImport("component", component_mod);
 
     const signals_mod = b.createModule(.{
         .root_source_file = b.path("lib/signals.zig"),
         .target = target,
         .optimize = optimize,
     });
-    lib.root_module = signals_mod;
+    lib.addImport("signals", signals_mod);
 
     b.installArtifact(lib, .{ .dest_dir = .prefix, .install_subdir = "lib" });
 }
