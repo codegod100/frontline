@@ -14,6 +14,7 @@ pub const Component = struct {
     render_fn: *const RenderFn,
     state: std.StringHashMap(*anyopaque),
     root: ?*VNode,
+    parent_id: usize,
 
     pub fn init(allocator: Allocator, render_fn: *const RenderFn) !*Self {
         const comp = try allocator.create(Self);
@@ -22,6 +23,7 @@ pub const Component = struct {
             .render_fn = render_fn,
             .state = std.StringHashMap(*anyopaque).init(allocator),
             .root = null,
+            .parent_id = 0,
         };
         return comp;
     }
@@ -46,11 +48,14 @@ pub const Component = struct {
         const render = self.render_fn;
         const new_root = render(self, self.allocator) catch return;
         if (self.root) |old| {
-            js.removeChild(0, old.id);
-            js.appendChild(0, new_root.id);
-            new_root.mount(0);
+            js.replaceChild(self.parent_id, new_root.id, old.id);
+            if (new_root.kind == .element) {
+                for (new_root.children.items) |child| {
+                    child.mount(new_root.id);
+                }
+            }
         } else {
-            new_root.mount(0);
+            new_root.mount(self.parent_id);
         }
         self.root = new_root;
     }

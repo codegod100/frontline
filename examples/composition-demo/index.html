@@ -9,12 +9,128 @@
       body {
         margin: 0;
         font-family: "IBM Plex Sans", "Source Sans 3", "Noto Sans", system-ui, sans-serif;
-        background: radial-gradient(circle at top, #1b2b45, #0b1220 60%);
-        color: #f8fafc;
+        background: linear-gradient(120deg, #fdf2e9, #eef2ff);
+        color: #0f172a;
       }
       #app {
         min-height: 100vh;
-        padding: 48px 24px;
+        padding: 32px 24px;
+      }
+      .app {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 56px 24px;
+        box-sizing: border-box;
+      }
+      .shell {
+        width: min(100%, 980px);
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(15,23,42,0.08);
+        border-radius: 28px;
+        padding: 36px;
+        box-shadow: 0 30px 80px rgba(15,23,42,0.15);
+      }
+      .header {
+        display: grid;
+        gap: 14px;
+        text-align: left;
+      }
+      .badge {
+        align-self: start;
+        display: inline-flex;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: #111827;
+        color: #f8fafc;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .title {
+        font-size: 40px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        margin: 0;
+      }
+      .tagline {
+        font-size: 17px;
+        color: #475569;
+        margin: 0;
+        max-width: 560px;
+        line-height: 1.6;
+      }
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin-top: 28px;
+      }
+      .card {
+        padding: 22px;
+        background: white;
+        border-radius: 20px;
+        border: 1px solid rgba(15,23,42,0.08);
+        box-shadow: 0 18px 40px rgba(15,23,42,0.08);
+      }
+      .card-title {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        color: #0f172a;
+        letter-spacing: 0.01em;
+      }
+      .card-body {
+        font-size: 15px;
+        color: #475569;
+        line-height: 1.6;
+        margin: 0 0 12px 0;
+      }
+      .counter-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        color: #0f172a;
+      }
+      .count-pill {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0f172a;
+        background: #e2e8f0;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .btn-dark {
+        background: #0f172a;
+        color: #f8fafc;
+      }
+      .btn-primary {
+        background: #2563eb;
+        color: white;
+      }
+      .btn-warm {
+        background: #f97316;
+        color: white;
       }
     </style>
   </head>
