@@ -1,6 +1,7 @@
 const std = @import("std");
-const VNode = @import("../lib/vdom.zig").VNode;
-const Component = @import("../lib/component.zig").Component;
+const frontline = @import("frontline");
+const VNode = frontline.VNode;
+const Component = frontline.Component;
 
 var counter_component: ?*Component = null;
 

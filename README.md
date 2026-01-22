@@ -23,10 +23,11 @@ This creates the static library in `zig-out/lib/`.
 A basic counter component demonstrating reactive state.
 
 ```bash
-cd simple-counter
+cd examples/simple-counter
 zig build
-deno run --allow-net --allow-read -A ../../simple-counter.js
+python3 -m http.server 8000
 ```
+Open `http://localhost:8000` in your browser.
 
 Or serve with a simple HTTP server of your choice.
 
@@ -34,24 +35,26 @@ Or serve with a simple HTTP server of your choice.
 Shows off the framework's capabilities and features.
 
 ```bash
-cd landing-page
+cd examples/landing-page
 zig build
-deno run --allow-net --allow-read -A ../../landing-page.js
+python3 -m http.server 8000
 ```
+Open `http://localhost:8000` in your browser.
 
 ### Composition Demo
 Demonstrates multiple independent components working together.
 
 ```bash
-cd composition-demo
+cd examples/composition-demo
 zig build
-deno run --allow-net --allow-read -A ../../composition-demo.js
+python3 -m http.server 8000
 ```
+Open `http://localhost:8000` in your browser.
 
 ## Example Usage
 
 ```zig
-const frontline = @import("../lib");
+const frontline = @import("../../lib");
 
 var counter_component: ?*frontline.Component = null;
 
