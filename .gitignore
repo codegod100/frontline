@@ -1,0 +1,11 @@
+.zig-cache/
+zig-out/
+zig-cache/
+*.o
+*.wasm
+*.a
+*.so
+*.dylib
+*.dll
+.DS_Store
+/tmp/deno.log
