@@ -1,32 +1,23 @@
 const std = @import("std");
-
-const VNode = @import("vdom.zig").VNode;
-const Component = @import("component.zig").Component;
+const frontline = @import("frontline");
+const VNode = frontline.VNode;
+const Component = frontline.Component;
+const ui = frontline.ui;
 
 var greeting_component: ?*Component = null;
 var counter_component: ?*Component = null;
 
 fn renderGreeting(comp: *Component, allocator: std.mem.Allocator) !*VNode {
-    const container = try VNode.createElement(allocator, "div");
-    try container.setProp("style", "padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;");
-
-    const h2 = try VNode.createElement(allocator, "h2");
-    try h2.setProp("style", "margin: 0 0 12px 0; font-size: 20px; color: white;");
-    try h2.appendChild(try VNode.createText(allocator, "👋 Greeting Component"));
-    try container.appendChild(h2);
-
-    const message = try VNode.createElement(allocator, "p");
-    try message.setProp("style", "font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.6;");
-    try message.appendChild(try VNode.createText(allocator, "Hello from Zig/WebAssembly! This component demonstrates reusable UI building."));
-    try container.appendChild(message);
-
-    const button = try VNode.createElement(allocator, "button");
-    try button.setProp("style", "margin-top: 16px; padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;");
-    try button.setProp("onclick", "module.instance.exports.updateGreeting()");
-    try button.appendChild(try VNode.createText(allocator, "Change Message"));
-    try container.appendChild(button);
-
-    return container;
+    return ui.build(allocator, ui.node("div", &.{
+        ui.prop("style", "padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;"),
+    }, &.{
+        ui.h2(&.{ ui.prop("style", "margin: 0 0 12px 0; font-size: 20px; color: white;") }, &.{ ui.text("👋 Greeting Component") }),
+        ui.p(&.{ ui.prop("style", "font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.6;") }, &.{ ui.text("Hello from Zig/WebAssembly! This component demonstrates reusable UI building.") }),
+        ui.button(&.{
+            ui.prop("style", "margin-top: 16px; padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;"),
+            ui.prop("onclick", "window.wasmModule.exports.updateGreeting()"),
+        }, &.{ ui.text("Change Message") }),
+    }));
 }
 
 export fn updateGreeting() void {
@@ -46,40 +37,28 @@ export fn updateGreeting() void {
 fn renderCounter(comp: *Component, allocator: std.mem.Allocator) !*VNode {
     const count = Component.getState(i32, comp, "count");
 
-    const container = try VNode.createElement(allocator, "div");
-    try container.setProp("style", "padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;");
-
-    const h2 = try VNode.createElement(allocator, "h2");
-    try h2.setProp("style", "margin: 0 0 12px 0; font-size: 20px; color: white;");
-    try h2.appendChild(try VNode.createText(allocator, "🔢 Counter Component"));
-    try container.appendChild(h2);
-
-    const row = try VNode.createElement(allocator, "div");
-    try row.setProp("style", "display: flex; align-items: center; gap: 16px; font-size: 24px; color: white;");
-    try row.appendChild(try VNode.createText(allocator, "Count: "));
-
-    const value = try VNode.createElement(allocator, "span");
-    try value.setProp("style", "font-size: 36px; font-weight: 700; color: #007bff; font-family: monospace; min-width: 60px; display: inline-block;");
     var buf: [32]u8 = undefined;
     const count_str = std.fmt.bufPrint(&buf, "{d}", .{count}) catch "0";
-    try value.appendChild(try VNode.createText(allocator, count_str));
-    try row.appendChild(value);
 
-    try container.appendChild(row);
-
-    const button = try VNode.createElement(allocator, "button");
-    try button.setProp("style", "margin-top: 16px; padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500;");
-    try button.setProp("onclick", "module.instance.exports.incrementCounter()");
-    try button.appendChild(try VNode.createText(allocator, "Increment"));
-    try container.appendChild(button);
-
-    const button2 = try VNode.createElement(allocator, "button");
-    try button2.setProp("style", "margin-left: 8px; padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500;");
-    try button2.setProp("onclick", "module.instance.exports.decrementCounter()");
-    try button2.appendChild(try VNode.createText(allocator, "Decrement"));
-    try container.appendChild(button2);
-
-    return container;
+    return ui.build(allocator, ui.node("div", &.{
+        ui.prop("style", "padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;"),
+    }, &.{
+        ui.h2(&.{ ui.prop("style", "margin: 0 0 12px 0; font-size: 20px; color: white;") }, &.{ ui.text("🔢 Counter Component") }),
+        ui.div(&.{ ui.prop("style", "display: flex; align-items: center; gap: 16px; font-size: 24px; color: white;") }, &.{
+            ui.text("Count: "),
+            ui.span(&.{ ui.prop("style", "font-size: 36px; font-weight: 700; color: #007bff; font-family: monospace; min-width: 60px; display: inline-block;") }, &.{ ui.text(count_str) }),
+        }),
+        ui.div(&.{ ui.prop("style", "margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;") }, &.{
+            ui.button(&.{
+                ui.prop("style", "padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500;"),
+                ui.prop("onclick", "window.wasmModule.exports.incrementCounter()"),
+            }, &.{ ui.text("Increment") }),
+            ui.button(&.{
+                ui.prop("style", "padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500;"),
+                ui.prop("onclick", "window.wasmModule.exports.decrementCounter()"),
+            }, &.{ ui.text("Decrement") }),
+        }),
+    }));
 }
 
 export fn incrementCounter() void {
@@ -99,15 +78,17 @@ export fn decrementCounter() void {
 export fn run() void {
     const allocator = std.heap.wasm_allocator;
 
-    const greeting = try VNode.createElement(allocator, "h1");
-    try greeting.setProp("style", "font-size: 48px; font-weight: 700; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.2); margin: 0 0 32px 0;");
-    try greeting.appendChild(try VNode.createText(allocator, "Frontline"));
+    const greeting = try ui.build(allocator, ui.node("h1", &.{
+        ui.prop("style", "font-size: 48px; font-weight: 700; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.2); margin: 0 0 32px 0;"),
+    }, &.{ ui.text("Frontline") }));
     greeting.mount(0);
 
-    try VNode.createText(allocator, "").mount(0);
+    const spacer = try ui.build(allocator, ui.node("span", &.{}, &.{ ui.text("") }));
+    spacer.mount(0);
 
-    const container = try VNode.createElement(allocator, "div");
-    try container.setProp("style", "display: flex; flex-direction: column; gap: 24px; max-width: 400px; width: 100%;");
+    const container = try ui.build(allocator, ui.node("div", &.{
+        ui.prop("style", "display: flex; flex-direction: column; gap: 24px; max-width: 400px; width: 100%;"),
+    }, &.{}));
 
     greeting_component = Component.init(allocator, renderGreeting) catch {
         return;

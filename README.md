@@ -55,22 +55,20 @@ Open `http://localhost:8000` in your browser.
 
 ```zig
 const frontline = @import("../../lib");
+const ui = frontline.ui;
 
 var counter_component: ?*frontline.Component = null;
 
 fn renderCounter(comp: *frontline.Component, allocator: std.mem.Allocator) !*frontline.VNode {
     const count = frontline.Component.getState(i32, comp, "count");
-    
-    const container = try frontline.VNode.createElement(allocator, "div");
-    try container.appendChild(try frontline.VNode.createText(allocator, "Count: "));
-    
-    const value = try frontline.VNode.createElement(allocator, "span");
+
     var buf: [32]u8 = undefined;
     const count_str = std.fmt.bufPrint(&buf, "{d}", .{count}) catch "0";
-    try value.appendChild(try frontline.VNode.createText(allocator, count_str));
-    try container.appendChild(value);
-    
-    return container;
+
+    return ui.build(allocator, ui.node("div", &.{}, &.{
+        ui.text("Count: "),
+        ui.span(&.{}, &.{ ui.text(count_str) }),
+    }));
 }
 
 export fn incrementCount() void {
@@ -97,15 +95,17 @@ export fn run() void {
 ## Example Usage
 
 ```zig
-// Create a component with render function
+// Create a component with the UI DSL
 fn renderCounter(comp: *Component, allocator: std.mem.Allocator) !*VNode {
     const count = comp.getState(i32, "count");
-    
-    const container = try VNode.createElement(allocator, "div");
-    const text = try VNode.createText(allocator, "Count: ");
-    
-    try container.appendChild(text);
-    return container;
+
+    var buf: [32]u8 = undefined;
+    const count_str = std.fmt.bufPrint(&buf, "{d}", .{count}) catch "0";
+
+    return ui.build(allocator, ui.node("div", &.{}, &.{
+        ui.text("Count: "),
+        ui.span(&.{}, &.{ ui.text(count_str) }),
+    }));
 }
 
 // Initialize component with state

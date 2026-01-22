@@ -5,3 +5,4 @@ pub const Computed = @import("signals.zig").Computed;
 pub const createSignal = @import("signals.zig").createSignal;
 pub const createComputed = @import("signals.zig").createComputed;
 pub const createEffect = @import("signals.zig").createEffect;
+pub const ui = @import("ui.zig");
