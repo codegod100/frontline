@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Frontline Multi-Component Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #app {
+            max-width: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        const elementMap = new Map();
+        
+        const module = await WebAssembly.instantiateStreaming(
+            fetch('./main.wasm'),
+            {
+                env: {},
+                js: {
+                    js_createElement: (tagPtr, tagLen, nodeId) => {
+                        const tag = new TextDecoder().decode(
+                            new Uint8Array(module.instance.exports.memory.buffer, tagPtr, tagLen)
+                        );
+                        const el = document.createElement(tag);
+                        el.id = `node-${nodeId}`;
+                        elementMap.set(nodeId, el);
+                        return nodeId;
+                    },
+                    js_setAttribute: (elId, namePtr, nameLen, valuePtr, valueLen) => {
+                        const name = new TextDecoder().decode(
+                            new Uint8Array(module.instance.exports.memory.buffer, namePtr, nameLen)
+                        );
+                        const value = new TextDecoder().decode(
+                            new Uint8Array(module.instance.exports.memory.buffer, valuePtr, valueLen)
+                        );
+                        const el = elementMap.get(elId);
+                        if (el) {
+                            if (name === 'onclick') {
+                                el.onclick = () => {
+                                    eval(value);
+                                };
+                            } else {
+                                el.setAttribute(name, value);
+                            }
+                        }
+                    },
+                    js_setTextContent: (elId, textPtr, textLen) => {
+                        const text = new TextDecoder().decode(
+                            new Uint8Array(module.instance.exports.memory.buffer, textPtr, textLen)
+                        );
+                        const el = elementMap.get(elId);
+                        if (el) el.textContent = text;
+                    },
+                    js_appendChild: (parentId, childId) => {
+                        const parent = parentId === 0 ? document.getElementById('app') : elementMap.get(parentId);
+                        const child = elementMap.get(childId);
+                        if (parent && child) {
+                            parent.appendChild(child);
+                        }
+                    },
+                    js_removeChild: (parentId, childId) => {
+                        const parent = parentId === 0 ? document.getElementById('app') : elementMap.get(parentId);
+                        const child = elementMap.get(childId);
+                        if (parent && child) parent.removeChild(child);
+                    },
+                    js_replaceChild: (parentId, newId, oldId) => {
+                        const parent = parentId === 0 ? document.getElementById('app') : elementMap.get(parentId);
+                        const old = elementMap.get(oldId);
+                        const newEl = elementMap.get(newId);
+                        if (parent && old && newEl) {
+                            parent.replaceChild(newEl, old);
+                        }
+                    }
+                }
+            }
+        );
+
+        window.wasmModule = module;
+        
+        if (module.instance.exports.init) {
+            module.instance.exports.init();
+        }
+        
+        if (module.instance.exports.run) {
+            module.instance.exports.run();
+        }
+    </script>
+</body>
+</html>
