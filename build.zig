@@ -44,4 +44,15 @@ pub fn build(b: *std.Build) void {
     lib.root_module.addImport("signals", signals_mod);
 
     b.installArtifact(lib);
+
+    const cli_module = b.createModule(.{
+        .root_source_file = b.path("cli/main.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    const cli_exe = b.addExecutable(.{
+        .name = "frontline",
+        .root_module = cli_module,
+    });
+    b.installArtifact(cli_exe);
 }
