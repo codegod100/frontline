@@ -1,0 +1,78 @@
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Source Sans 3", "Noto Sans", system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+  color: #333;
+}
+
+#app {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+}
+
+.counter-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.counter-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.count-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 18px;
+  color: #374151;
+}
+
+.count-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #007bff;
+  font-family: monospace;
+}
+
+.increment-btn {
+  align-self: flex-start;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+.increment-btn:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.increment-btn:active {
+  transform: translateY(0);
+}

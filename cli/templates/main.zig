@@ -13,13 +13,13 @@ fn renderCounter(comp: *Component, allocator: std.mem.Allocator) !*VNode {
     const count_str = std.fmt.bufPrint(&buf, "{d}", .{count}) catch "0";
 
     return ui.build(allocator, ui.node("div", &.{
-        ui.prop("style", "display: flex; flex-direction: column; gap: 16px; padding: 24px; background: white; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);"),
+        ui.prop("class", "counter-card"),
     }, &.{
-        ui.h2(&.{ui.prop("style", "margin: 0; font-size: 24px; font-weight: 600; color: #1f2937;")}, &.{ui.text("Counter Component")}),
-        ui.div(&.{ui.prop("style", "display: flex; align-items: baseline; gap: 8px; font-size: 18px; color: #374151;")}, &.{ui.text("Count: ")}),
-        ui.span(&.{ui.prop("style", "font-size: 28px; font-weight: 700; color: #007bff; font-family: monospace;")}, &.{ui.text(count_str)}),
+        ui.h2(&.{ui.prop("class", "counter-title")}, &.{ui.text("Counter Component")}),
+        ui.div(&.{ui.prop("class", "count-row")}, &.{ui.text("Count: ")}),
+        ui.span(&.{ui.prop("class", "count-value")}, &.{ui.text(count_str)}),
         ui.button(&.{
-            ui.prop("style", "align-self: flex-start; padding: 12px 24px; font-size: 16px; font-weight: 500; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s, transform 0.1s; box-shadow: 0 4px 12px rgba(0,123,255,0.3);"),
+            ui.prop("class", "increment-btn"),
             ui.prop("onclick", "window.wasmModule.exports.incrementCount()"),
         }, &.{ui.text("Increment")}),
     }));

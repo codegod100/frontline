@@ -8,6 +8,7 @@ const FileSpec = struct {
 const template_files = [_]FileSpec{
     .{ .path = "build.zig", .contents = @embedFile("templates/build.zig") },
     .{ .path = "index.html", .contents = @embedFile("templates/index.html") },
+    .{ .path = "style.css", .contents = @embedFile("templates/style.css") },
     .{ .path = "main.zig", .contents = @embedFile("templates/main.zig") },
     .{ .path = "lib/app.js", .contents = @embedFile("templates/lib/app.js") },
     .{ .path = "lib/wasm-loader.js", .contents = @embedFile("templates/lib/wasm-loader.js") },
